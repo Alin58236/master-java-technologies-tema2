@@ -1,83 +1,77 @@
 package servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ejb.CourseEJB;
 import model.Course;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
-import org.json.JSONObject;
-import java.util.List;
 
-@WebServlet("/courses")
+import java.io.PrintWriter;
+import java.util.List;
+@WebServlet("/courses/*")
 public class CourseServlet extends HttpServlet {
 
     @EJB
-    private CourseEJB courseEJB;
-
-    private final ObjectMapper mapper = new ObjectMapper();
+    private CourseEJB courseEJB; // EJB cu metode findAll, find, create, update, delete
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        List<Course> courses = courseEJB.findAll();
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
-        mapper.writeValue(resp.getWriter(), courses);
+        String path = req.getPathInfo();
+        PrintWriter out = resp.getWriter();
+
+        if (path == null || path.equals("/")) {
+            List<Course> courses = courseEJB.findAll();
+            out.print("[");
+            for (int i = 0; i < courses.size(); i++) {
+                Course c = courses.get(i);
+                out.print("{\"id\":" + c.getId() + ",\"name\":\"" + c.getName() + "\",\"teacherId\":" + c.getTeacherId() + "}");
+                if (i < courses.size() - 1) out.print(",");
+            }
+            out.print("]");
+        } else {
+            Long id = Long.valueOf(path.substring(1));
+            Course c = courseEJB.findById(id);
+            if (c != null) {
+                out.print("{\"id\":" + c.getId() + ",\"name\":\"" + c.getName() + "\",\"teacherId\":" + c.getTeacherId() + "}");
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+        }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        JSONObject json = new JSONObject(req.getReader().lines().reduce("", (a, b) -> a + b));
-
-        Course c = new Course();
-        c.setName(json.getString("name"));
-        c.setTeacherId(json.getLong("teacher_id"));
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        // poți citi parametrii direct din request, de exemplu:
+        String name = req.getParameter("name");
+        Long teacherId = Long.valueOf(req.getParameter("teacherId"));
+        Course c = new Course(name, teacherId);
         courseEJB.create(c);
 
+        resp.setContentType("application/json");
+        resp.getWriter().print("{\"id\":" + c.getId() + ",\"name\":\"" + c.getName() + "\",\"teacherId\":" + c.getTeacherId() + "}");
         resp.setStatus(HttpServletResponse.SC_CREATED);
-        resp.getWriter().write("Course created");
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        JSONObject json = new JSONObject(req.getReader().lines().reduce("", (a, b) -> a + b));
-
-        Long id = json.getLong("id");
-        Course c = courseEJB.findById(id);
-        if (c == null) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            resp.getWriter().write("Course not found");
-            return;
-        }
-
-        if (json.has("name")) c.setName(json.getString("name"));
-        if (json.has("teacher_id")) c.setTeacherId(json.getLong("teacher_id"));
-
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Long id = Long.valueOf(req.getPathInfo().substring(1));
+        String name = req.getParameter("name");
+        Long teacherId = Long.valueOf(req.getParameter("teacherId"));
+        Course c = new Course(name, teacherId);
+        c.setId(id);
         courseEJB.update(c);
-        resp.getWriter().write("Course updated");
+
+        resp.setContentType("application/json");
+        resp.getWriter().print("{\"id\":" + c.getId() + ",\"name\":\"" + c.getName() + "\",\"teacherId\":" + c.getTeacherId() + "}");
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        String idParam = req.getParameter("id");
-        if (idParam == null) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("Missing id parameter");
-            return;
-        }
-
-        Long id = Long.parseLong(idParam);
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Long id = Long.valueOf(req.getPathInfo().substring(1));
         courseEJB.delete(id);
-        resp.getWriter().write("Course deleted");
+        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 }

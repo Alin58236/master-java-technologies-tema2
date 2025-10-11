@@ -4,82 +4,73 @@ import ejb.TeacherEJB;
 import model.Teacher;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
-import org.json.JSONObject;
+import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet("/teachers")
+@WebServlet("/teachers/*")
 public class TeacherServlet extends HttpServlet {
 
     @EJB
     private TeacherEJB teacherEJB;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        System.out.println(" TeacherServlet GET TEACHERS");
-
-        List<Teacher> teachers = teacherEJB.findAll();
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+        String path = req.getPathInfo();
 
-        System.out.println(" TeacherServlet AFTER GET TEACHERS");
-        resp.getWriter().write(new JSONObject().put("teachers", teachers).toString());
-        System.out.println(" AFTER RESPONSE");
+        if (path == null || path.equals("/")) {
+            List<Teacher> teachers = teacherEJB.findAll();
+            out.print("[");
+            for (int i = 0; i < teachers.size(); i++) {
+                Teacher t = teachers.get(i);
+                out.print("{\"id\":" + t.getId() + ",\"name\":\"" + t.getName() + "\"}");
+                if (i < teachers.size() - 1) out.print(",");
+            }
+            out.print("]");
+        } else {
+            Long id = Long.valueOf(path.substring(1));
+            Teacher t = teacherEJB.findById(id);
+            if (t != null) {
+                out.print("{\"id\":" + t.getId() + ",\"name\":\"" + t.getName() + "\"}");
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+        }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        JSONObject json = new JSONObject(req.getReader().lines().reduce("", (a, b) -> a + b));
-
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String name = req.getParameter("name");
         Teacher t = new Teacher();
-        t.setName(json.getString("name"));
-        t.setDepartment(json.getString("department"));
+        t.setName(name);
         teacherEJB.create(t);
 
+        resp.setContentType("application/json");
+        resp.getWriter().print("{\"id\":" + t.getId() + ",\"name\":\"" + t.getName() + "\"}");
         resp.setStatus(HttpServletResponse.SC_CREATED);
-        resp.getWriter().write("Teacher created");
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        JSONObject json = new JSONObject(req.getReader().lines().reduce("", (a, b) -> a + b));
-
-        Long id = json.getLong("id");
-        Teacher t = teacherEJB.findById(id);
-        if (t == null) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            resp.getWriter().write("Teacher not found");
-            return;
-        }
-
-        if (json.has("name")) t.setName(json.getString("name"));
-        if (json.has("department")) t.setDepartment(json.getString("department"));
-
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Long id = Long.valueOf(req.getPathInfo().substring(1));
+        String name = req.getParameter("name");
+        Teacher t = new Teacher();
+        t.setId(id);
+        t.setName(name);
         teacherEJB.update(t);
-        resp.getWriter().write("Teacher updated");
+
+        resp.setContentType("application/json");
+        resp.getWriter().print("{\"id\":" + t.getId() + ",\"name\":\"" + t.getName() + "\"}");
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        String idParam = req.getParameter("id");
-        if (idParam == null) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("Missing id parameter");
-            return;
-        }
-
-        Long id = Long.parseLong(idParam);
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+        Long id = Long.valueOf(req.getPathInfo().substring(1));
         teacherEJB.delete(id);
-        resp.getWriter().write("Teacher deleted");
+        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 }
