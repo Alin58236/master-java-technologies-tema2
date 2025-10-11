@@ -3,38 +3,73 @@ package ejb;
 import model.Course;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import java.util.List;
 
 @Stateless
 public class CourseEJB {
 
-    @PersistenceContext(unitName = "OraclePU")
-    private EntityManager em;
+    @PersistenceUnit(unitName = "OraclePU")
+    private EntityManagerFactory emf;
 
     // CREATE
     public void create(Course course) {
-        em.persist(course);
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(course);
+            em.getTransaction().commit();
+        } finally {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            em.close();
+        }
     }
 
     // READ all
     public List<Course> findAll() {
-        return em.createQuery("SELECT c FROM Course c", Course.class).getResultList();
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT c FROM Course c", Course.class).getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     // READ by ID
     public Course findById(Long id) {
-        return em.find(Course.class, id);
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.find(Course.class, id);
+        } finally {
+            em.close();
+        }
     }
 
     // UPDATE
     public void update(Course course) {
-        em.merge(course);
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(course);
+            em.getTransaction().commit();
+        } finally {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            em.close();
+        }
     }
 
     // DELETE
     public void delete(Long id) {
-        Course c = em.find(Course.class, id);
-        if (c != null) em.remove(c);
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Course c = em.find(Course.class, id);
+            if (c != null) em.remove(c);
+            em.getTransaction().commit();
+        } finally {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            em.close();
+        }
     }
 }

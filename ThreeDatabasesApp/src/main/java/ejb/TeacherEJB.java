@@ -3,38 +3,73 @@ package ejb;
 import model.Teacher;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import java.util.List;
 
 @Stateless
 public class TeacherEJB {
 
-    @PersistenceContext(unitName = "MssqlPU")
-    private EntityManager em;
+    @PersistenceUnit(unitName = "OraclePU") // sau unitatea corectă definită pentru Teacher
+    private EntityManagerFactory emf;
 
     // CREATE
     public void create(Teacher teacher) {
-        em.persist(teacher);
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(teacher);
+            em.getTransaction().commit();
+        } finally {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            em.close();
+        }
     }
 
     // READ all
     public List<Teacher> findAll() {
-        return em.createQuery("SELECT t FROM Teacher t", Teacher.class).getResultList();
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT t FROM Teacher t", Teacher.class).getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     // READ by ID
     public Teacher findById(Long id) {
-        return em.find(Teacher.class, id);
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.find(Teacher.class, id);
+        } finally {
+            em.close();
+        }
     }
 
     // UPDATE
     public void update(Teacher teacher) {
-        em.merge(teacher);
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(teacher);
+            em.getTransaction().commit();
+        } finally {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            em.close();
+        }
     }
 
     // DELETE
     public void delete(Long id) {
-        Teacher t = em.find(Teacher.class, id);
-        if (t != null) em.remove(t);
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Teacher t = em.find(Teacher.class, id);
+            if (t != null) em.remove(t);
+            em.getTransaction().commit();
+        } finally {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            em.close();
+        }
     }
 }
