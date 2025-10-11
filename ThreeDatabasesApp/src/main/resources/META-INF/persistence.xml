@@ -1,19 +1,59 @@
-<persistence xmlns="..." version="2.1">
-    <persistence-unit name="PostgresPU">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>java:/PostgresDS</jta-data-source>
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+
+    <!-- ======================== -->
+    <!-- POSTGRESQL Configuration -->
+    <!-- ======================== -->
+    <persistence-unit name="PostgresPU" transaction-type="JTA">
+        <jta-data-source>java:/jdbc/PostgresDS</jta-data-source>
         <class>model.Student</class>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/univdb_postgres"/>
+            <property name="javax.persistence.jdbc.user" value="univuser"/>
+            <property name="javax.persistence.jdbc.password" value="Password123!"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
     </persistence-unit>
 
-    <persistence-unit name="MSSQLPU">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>java:/MSSQLDS</jta-data-source>
-        <class>model.Teacher</class>
-    </persistence-unit>
-
-    <persistence-unit name="OraclePU">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>java:/OracleDS</jta-data-source>
+    <!-- ======================== -->
+    <!-- ORACLE Configuration -->
+    <!-- ======================== -->
+    <persistence-unit name="OraclePU" transaction-type="JTA">
+        <jta-data-source>java:/jdbc/OracleDS</jta-data-source>
         <class>model.Course</class>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521/XEPDB1"/>
+            <property name="javax.persistence.jdbc.user" value="univuser"/>
+            <property name="javax.persistence.jdbc.password" value="password"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
     </persistence-unit>
+
+    <!-- ======================== -->
+    <!-- MSSQL Configuration -->
+    <!-- ======================== -->
+    <persistence-unit name="MssqlPU" transaction-type="JTA">
+        <jta-data-source>java:/jdbc/MssqlDS</jta-data-source>
+        <class>model.Teacher</class>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=univdb_mssql;encrypt=false"/>
+            <property name="javax.persistence.jdbc.user" value="sa"/>
+            <property name="javax.persistence.jdbc.password" value="Password123!"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+
 </persistence>

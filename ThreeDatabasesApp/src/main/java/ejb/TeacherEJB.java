@@ -9,7 +9,7 @@ import java.util.List;
 @Stateless
 public class TeacherEJB {
 
-    @PersistenceContext(unitName = "MSSQLPU")
+    @PersistenceContext(unitName = "MssqlPU")
     private EntityManager em;
 
     // CREATE
