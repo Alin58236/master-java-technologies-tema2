@@ -1,6 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
-    <persistence-unit name="default">
+<persistence xmlns="..." version="2.1">
+    <persistence-unit name="PostgresPU">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <jta-data-source>java:/PostgresDS</jta-data-source>
+        <class>model.Student</class>
+    </persistence-unit>
 
+    <persistence-unit name="MSSQLPU">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <jta-data-source>java:/MSSQLDS</jta-data-source>
+        <class>model.Teacher</class>
+    </persistence-unit>
+
+    <persistence-unit name="OraclePU">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <jta-data-source>java:/OracleDS</jta-data-source>
+        <class>model.Course</class>
     </persistence-unit>
 </persistence>
