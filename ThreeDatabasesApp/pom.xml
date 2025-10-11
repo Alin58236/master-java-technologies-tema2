@@ -60,14 +60,14 @@
 
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc11</artifactId>
-            <version>21.9.0.0</version>
+            <artifactId>ojdbc8</artifactId>
+            <version>19.15.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>12.8.1.jre11</version>
+            <version>9.4.1.jre8</version>
         </dependency>
 
 
