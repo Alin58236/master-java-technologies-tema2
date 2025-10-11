@@ -20,9 +20,15 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
+        System.out.println(" TeacherServlet GET TEACHERS");
+
         List<Teacher> teachers = teacherEJB.findAll();
         resp.setContentType("application/json");
+
+        System.out.println(" TeacherServlet AFTER GET TEACHERS");
         resp.getWriter().write(new JSONObject().put("teachers", teachers).toString());
+        System.out.println(" AFTER RESPONSE");
     }
 
     @Override

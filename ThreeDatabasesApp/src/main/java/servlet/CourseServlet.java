@@ -1,5 +1,6 @@
 package servlet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ejb.CourseEJB;
 import model.Course;
 
@@ -17,13 +18,15 @@ public class CourseServlet extends HttpServlet {
     @EJB
     private CourseEJB courseEJB;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
         List<Course> courses = courseEJB.findAll();
         resp.setContentType("application/json");
-        resp.getWriter().write(new JSONObject().put("courses", courses).toString());
+        mapper.writeValue(resp.getWriter(), courses);
     }
 
     @Override

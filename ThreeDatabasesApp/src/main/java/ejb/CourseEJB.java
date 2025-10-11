@@ -5,6 +5,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -30,7 +31,23 @@ public class CourseEJB {
     public List<Course> findAll() {
         EntityManager em = emf.createEntityManager();
         try {
+
+            System.out.println("inainte de query");
             return em.createQuery("SELECT c FROM Course c", Course.class).getResultList();
+            //List<Course> courses = em.createNativeQuery("SELECT * FROM UNIVUSER.COURSES", Course.class).getResultList();
+//            for (Course course : courses) {
+//                System.out.println(course);
+//            }
+
+
+//            Course c = new Course();
+//            c.setId(1L);
+//            c.setName("dsadasd");
+//            c.setTeacherId(1L);
+//            List<Course> list = new ArrayList<>();
+//            list.add(c);
+//            System.out.println("dupa query si afisare");
+//            return list;
         } finally {
             em.close();
         }

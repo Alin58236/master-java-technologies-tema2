@@ -13,7 +13,7 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/univdb_postgres"/>
             <property name="javax.persistence.jdbc.user" value="univuser"/>
             <property name="javax.persistence.jdbc.password" value="Password123!"/>
-
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
             <!-- EclipseLink specific -->
             <property name="eclipselink.logging.level" value="FINE"/>
             <property name="eclipselink.target-database" value="PostgreSQL"/>
@@ -30,13 +30,13 @@
             <property name="javax.persistence.jdbc.user" value="univuser"/>
             <property name="javax.persistence.jdbc.password" value="password"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
-            <!-- EclipseLink specific -->
-            <property name="eclipselink.logging.level" value="FINE"/>
-            <property name="eclipselink.target-database" value="Oracle"/>
-            <property name="eclipselink.ddl-generation" value="none"/>
-
+            <property name="hibernate.default_schema" value="UNIVUSER"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="none"/>
         </properties>
     </persistence-unit>
+
 
     <!-- ==================== MSSQL ==================== -->
     <persistence-unit name="MssqlPU" transaction-type="RESOURCE_LOCAL">
@@ -47,7 +47,7 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=univdb_mssql;encrypt=false"/>
             <property name="javax.persistence.jdbc.user" value="univuser"/>
             <property name="javax.persistence.jdbc.password" value="Password123!"/>
-
+            <property name="hibernate.default_schema" value="dbo"/>
             <!-- Hibernate specific -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>

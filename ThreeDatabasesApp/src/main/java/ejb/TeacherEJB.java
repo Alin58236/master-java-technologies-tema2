@@ -10,7 +10,7 @@ import java.util.List;
 @Stateless
 public class TeacherEJB {
 
-    @PersistenceUnit(unitName = "OraclePU") // sau unitatea corectă definită pentru Teacher
+    @PersistenceUnit(unitName = "MssqlPU")
     private EntityManagerFactory emf;
 
     // CREATE
@@ -29,10 +29,16 @@ public class TeacherEJB {
     // READ all
     public List<Teacher> findAll() {
         EntityManager em = emf.createEntityManager();
+        System.out.println("TeacherEJB find teachers");
         try {
-            return em.createQuery("SELECT t FROM Teacher t", Teacher.class).getResultList();
+            List<Teacher> list = em.createQuery("SELECT t FROM Teacher t", Teacher.class).getResultList();
+            for (Teacher teacher : list) {
+                System.out.println(teacher);
+            }
+            return list;
         } finally {
             em.close();
+            System.out.println("TeacherEJB after find teachers");
         }
     }
 

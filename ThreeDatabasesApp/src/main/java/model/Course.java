@@ -4,17 +4,19 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "COURSES", schema="univuser")
+@Table(name = "COURSES", schema="UNIVUSER")
 public class Course implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_seq")
+    @SequenceGenerator(name = "course_seq", sequenceName = "COURSES_SEQ", allocationSize = 1)
     private Long id;
 
-    @Column(nullable = false)
+
+    @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column(name = "teacher_id")
+    @Column(name = "TEACHER_ID")
     private Long teacherId; // legătură simplă cu Teacher
 
     // Constructor implicit

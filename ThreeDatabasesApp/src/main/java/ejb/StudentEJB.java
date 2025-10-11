@@ -10,7 +10,7 @@ import java.util.List;
 @Stateless
 public class StudentEJB {
 
-    @PersistenceUnit(unitName = "OraclePU") // sau unitatea corectă definită pentru Student
+    @PersistenceUnit(unitName = "PostgresPU")
     private EntityManagerFactory emf;
 
     // CREATE
