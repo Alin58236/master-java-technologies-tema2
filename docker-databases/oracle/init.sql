@@ -14,3 +14,4 @@ CREATE TABLE COURSES (
 
 INSERT INTO COURSES (name, teacher_id) VALUES ('Math 101', 1);
 INSERT INTO COURSES (name, teacher_id) VALUES ('Physics 101', 2);
+COMMIT;
