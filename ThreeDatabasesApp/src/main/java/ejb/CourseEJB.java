@@ -34,20 +34,7 @@ public class CourseEJB {
 
             System.out.println("inainte de query");
             return em.createQuery("SELECT c FROM Course c", Course.class).getResultList();
-            //List<Course> courses = em.createNativeQuery("SELECT * FROM UNIVUSER.COURSES", Course.class).getResultList();
-//            for (Course course : courses) {
-//                System.out.println(course);
-//            }
 
-
-//            Course c = new Course();
-//            c.setId(1L);
-//            c.setName("dsadasd");
-//            c.setTeacherId(1L);
-//            List<Course> list = new ArrayList<>();
-//            list.add(c);
-//            System.out.println("dupa query si afisare");
-//            return list;
         } finally {
             em.close();
         }
