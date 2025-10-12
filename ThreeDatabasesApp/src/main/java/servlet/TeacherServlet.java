@@ -1,8 +1,8 @@
 package servlet;
 
+import com.google.gson.Gson;
 import ejb.TeacherEJB;
 import model.Teacher;
-
 import javax.ejb.EJB;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -12,6 +12,8 @@ import java.util.List;
 
 @WebServlet("/teachers/*")
 public class TeacherServlet extends HttpServlet {
+
+    private final Gson gson = new Gson();
 
     @EJB
     private TeacherEJB teacherEJB;
@@ -24,18 +26,12 @@ public class TeacherServlet extends HttpServlet {
 
         if (path == null || path.equals("/")) {
             List<Teacher> teachers = teacherEJB.findAll();
-            out.print("[");
-            for (int i = 0; i < teachers.size(); i++) {
-                Teacher t = teachers.get(i);
-                out.print("{\"id\":" + t.getId() + ",\"name\":\"" + t.getName() + "\"}");
-                if (i < teachers.size() - 1) out.print(",");
-            }
-            out.print("]");
+            out.print(gson.toJson(teachers));
         } else {
             Long id = Long.valueOf(path.substring(1));
             Teacher t = teacherEJB.findById(id);
             if (t != null) {
-                out.print("{\"id\":" + t.getId() + ",\"name\":\"" + t.getName() + "\"}");
+                out.print(gson.toJson(t));
             } else {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -45,12 +41,14 @@ public class TeacherServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String name = req.getParameter("name");
+        String department = req.getParameter("department");
         Teacher t = new Teacher();
         t.setName(name);
+        t.setDepartment(department);
         teacherEJB.create(t);
 
         resp.setContentType("application/json");
-        resp.getWriter().print("{\"id\":" + t.getId() + ",\"name\":\"" + t.getName() + "\"}");
+        resp.getWriter().print(gson.toJson(t));
         resp.setStatus(HttpServletResponse.SC_CREATED);
     }
 
@@ -58,13 +56,15 @@ public class TeacherServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Long id = Long.valueOf(req.getPathInfo().substring(1));
         String name = req.getParameter("name");
+        String department = req.getParameter("department");
         Teacher t = new Teacher();
         t.setId(id);
         t.setName(name);
+        t.setDepartment(department);
         teacherEJB.update(t);
 
         resp.setContentType("application/json");
-        resp.getWriter().print("{\"id\":" + t.getId() + ",\"name\":\"" + t.getName() + "\"}");
+        resp.getWriter().print(gson.toJson(t));
     }
 
     @Override

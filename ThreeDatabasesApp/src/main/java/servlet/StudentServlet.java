@@ -1,8 +1,8 @@
 package servlet;
 
+import com.google.gson.Gson;
 import ejb.StudentEJB;
 import model.Student;
-
 import javax.ejb.EJB;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -12,6 +12,8 @@ import java.util.List;
 
 @WebServlet("/students/*")
 public class StudentServlet extends HttpServlet {
+
+    private final Gson gson = new Gson();
 
     @EJB
     private StudentEJB studentEJB;
@@ -24,23 +26,18 @@ public class StudentServlet extends HttpServlet {
 
         if (path == null || path.equals("/")) {
             List<Student> students = studentEJB.findAll();
-            out.print("[");
-            for (int i = 0; i < students.size(); i++) {
-                Student s = students.get(i);
-                out.print("{\"id\":" + s.getId() + ",\"name\":" + s.getName() + ",\"email\":" + s.getEmail() + "}");
-                if (i < students.size() - 1) out.print(",");
-            }
-            out.print("]");
+            out.print(gson.toJson(students));
         } else {
             Long id = Long.valueOf(path.substring(1));
             Student s = studentEJB.findById(id);
             if (s != null) {
-                out.print("{\"id\":" + s.getId() + ",\"name\":" + s.getName() + ",\"email\":" + s.getEmail() + "}");
+                out.print(gson.toJson(s));
             } else {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -52,9 +49,10 @@ public class StudentServlet extends HttpServlet {
         studentEJB.create(s);
 
         resp.setContentType("application/json");
-        resp.getWriter().print("{\"id\":" + s.getId() + ",\"name\":" + s.getName() + ",\"email\":" + s.getEmail() + "}");
+        resp.getWriter().print(gson.toJson(s));
         resp.setStatus(HttpServletResponse.SC_CREATED);
     }
+
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -68,8 +66,9 @@ public class StudentServlet extends HttpServlet {
         studentEJB.update(s);
 
         resp.setContentType("application/json");
-        resp.getWriter().print("{\"id\":" + s.getId() + ",\"name\":\"" + s.getName() + "\"}");
+        resp.getWriter().print(gson.toJson(s));
     }
+
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
