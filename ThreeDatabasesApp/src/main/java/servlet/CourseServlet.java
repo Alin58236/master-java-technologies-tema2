@@ -71,8 +71,21 @@ public class CourseServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Long id = Long.valueOf(req.getPathInfo().substring(1));
-        courseEJB.delete(id);
-        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        String pathInfo = req.getPathInfo(); // e.g. /5
+        if (pathInfo == null || pathInfo.equals("/")) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing course ID");
+            return;
+        }
+
+        try {
+            long id = Long.parseLong(pathInfo.substring(1)); // remove the slash
+            courseEJB.delete(id);
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid course ID format");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error deleting course");
+        }
     }
 }

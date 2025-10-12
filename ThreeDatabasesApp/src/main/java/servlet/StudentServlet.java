@@ -71,9 +71,22 @@ public class StudentServlet extends HttpServlet {
 
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        Long id = Long.valueOf(req.getPathInfo().substring(1));
-        studentEJB.delete(id);
-        resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String pathInfo = req.getPathInfo(); // e.g. /5
+        if (pathInfo == null || pathInfo.equals("/")) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing student ID");
+            return;
+        }
+
+        try {
+            long id = Long.parseLong(pathInfo.substring(1)); // remove the slash
+            studentEJB.delete(id);
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid student ID format");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error deleting student");
+        }
     }
 }
