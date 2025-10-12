@@ -18,12 +18,16 @@
         <th>ID</th>
         <th>Name</th>
         <th>Subject</th>
+        <th>Actions</th>
     </tr>
     <c:forEach var="teacher" items="${teachers}">
         <tr>
             <td>${teacher.id}</td>
             <td>${teacher.name}</td>
             <td>${teacher.department}</td>
+            <td>
+                <button onclick="deleteTeacher(${teacher.id})">Delete</button>
+            </td>
         </tr>
     </c:forEach>
 </table>
@@ -57,6 +61,28 @@
             }
         }).catch(err => alert('Error: ' + err));
     }
+
+
+    function deleteTeacher(id) {
+
+        if (!confirm("Vrei sa stergi profesorul "+id+"?")) return;
+        fetch("/ThreeDatabasesApp-1.0-SNAPSHOT/api/teachers/"+id, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Profesorul "+id+" a fost sters.");
+                    location.reload();
+                } else {
+                    response.text().then(text => alert("Server error: " + text));
+                }
+            })
+            .catch(err => alert("Request failed: " + err));
+    }
+
+
+
+
 </script>
 
 </body>

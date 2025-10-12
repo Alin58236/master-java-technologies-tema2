@@ -14,12 +14,20 @@
 </c:if>
 
 <table border="1">
-  <tr><th>ID</th><th>Name</th><th>Teacher Name</th></tr>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Teacher Name</th>
+    <th>Actions</th>
+  </tr>
   <c:forEach var="course" items="${courses}">
     <tr>
       <td>${course.id}</td>
       <td>${course.name}</td>
       <td>${teacherNames[course.teacherId]}</td>
+      <td>
+        <button onclick="deleteCourse(${course.id})">Delete</button>
+      </td>
     </tr>
   </c:forEach>
 </table>
@@ -47,15 +55,33 @@
     })
             .then(response => {
               if (!response.ok) throw new Error('POST failed with ' + response.status);
-              // după POST reușit, redirecționează
               window.location.href = '/ThreeDatabasesApp-1.0-SNAPSHOT/page/courses';
             })
             .catch(err => {
               alert('Error posting data: ' + err.message);
             });
   }
-</script>
 
+  function deleteCourse(id) {
+
+    if (!confirm("Vrei sa stergi cursul "+id+"?")) return;
+    fetch("/ThreeDatabasesApp-1.0-SNAPSHOT/api/courses/"+id, {
+      method: 'DELETE'
+    })
+            .then(response => {
+              if (response.ok) {
+                alert("Cursul "+id+" a fost sters.");
+                location.reload();
+              } else {
+                response.text().then(text => alert("Server error: " + text));
+              }
+            })
+            .catch(err => alert("Request failed: " + err));
+  }
+
+
+
+</script>
 
 </body>
 </html>

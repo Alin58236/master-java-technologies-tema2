@@ -18,12 +18,16 @@
     <th>ID</th>
     <th>Name</th>
     <th>Email</th>
+    <th>Actions</th>
   </tr>
   <c:forEach var="student" items="${students}">
     <tr>
       <td>${student.id}</td>
       <td>${student.name}</td>
       <td>${student.email}</td>
+      <td>
+        <button onclick="deleteStudent(${student.id})">Delete</button>
+      </td>
     </tr>
   </c:forEach>
 </table>
@@ -56,6 +60,23 @@
         alert('Error posting data');
       }
     }).catch(err => alert('Error: ' + err));
+  }
+
+  function deleteStudent(id) {
+
+    if (!confirm("Vrei sa stergi studentul "+id+"?")) return;
+    fetch("/ThreeDatabasesApp-1.0-SNAPSHOT/api/students/"+id, {
+      method: 'DELETE'
+    })
+            .then(response => {
+              if (response.ok) {
+                alert("Studentul "+id+" a fost sters.");
+                location.reload();
+              } else {
+                response.text().then(text => alert("Server error: " + text));
+              }
+            })
+            .catch(err => alert("Request failed: " + err));
   }
 </script>
 
