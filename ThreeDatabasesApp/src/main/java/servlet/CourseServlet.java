@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet("/courses/*")
+@WebServlet("/api/courses/*")
 public class CourseServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
