@@ -6,8 +6,8 @@ services:
   postgres:
     image: postgres:14
     environment:
-      POSTGRES_USER: univuser
-      POSTGRES_PASSWORD: Password123!
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
       POSTGRES_DB: univdb_postgres
     ports:
       - "5432:5432"

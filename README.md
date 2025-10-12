@@ -37,8 +37,10 @@ docker run -it --network=docker-databases_default -v %cd%/mssql/init.sql:/init.s
      GO
 8. Conectare postgresql
 
-psql -h localhost -p 5432 -U univuser -d univdb_postgres
-Parola : Password123!
+psql -h localhost -p 5432 -U postgres -d univdb_postgres
+
+
+Parola : password
 
 
 9. mvn clean install (daca il faci mai devreme pica integration testele)
