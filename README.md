@@ -43,6 +43,19 @@ psql -h localhost -p 5432 -U postgres -d univdb_postgres
 Parola : password
 
 
+CREATE TABLE Students (
+id SERIAL PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+email VARCHAR(100) UNIQUE NOT NULL
+);
+
+INSERT INTO Students (name, email) VALUES
+('Alice', 'alice@example.com'),
+('Bob', 'bob@example.com');
+
+
+
+
 9. mvn clean install (daca il faci mai devreme pica integration testele)
 
 10. pui war in wildfly/standalone
