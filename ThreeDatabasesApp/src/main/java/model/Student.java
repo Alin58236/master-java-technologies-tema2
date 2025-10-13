@@ -17,7 +17,6 @@ public class Student implements Serializable {
     @Column(nullable = false, unique = true)
     private String email;
 
-    // Contructor implicit
     public Student() {}
 
     public Student(String name, String email) {
@@ -25,7 +24,6 @@ public class Student implements Serializable {
         this.email = email;
     }
 
-    // Getters și Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

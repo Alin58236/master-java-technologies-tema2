@@ -27,7 +27,7 @@ public class CoursePageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // obține lista de cursuri
+
         List<Course> courses = courseEJB.findAll();
         List<Teacher> teachers = teacherEJB.findAll();
         Map<Long, String> teacherNames = new HashMap<>();

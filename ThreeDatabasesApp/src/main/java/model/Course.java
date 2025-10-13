@@ -11,22 +11,19 @@ public class Course implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name = "NAME", nullable = false)
     private String name;
 
     @Column(name = "TEACHER_ID")
-    private Long teacherId; // legătură simplă cu Teacher
-
-    // Constructor implicit
+    private Long teacherId; 
+    
     public Course() {}
 
     public Course(String name, Long teacherId) {
         this.name = name;
         this.teacherId = teacherId;
     }
-
-    // Getters și Setters
+    
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
