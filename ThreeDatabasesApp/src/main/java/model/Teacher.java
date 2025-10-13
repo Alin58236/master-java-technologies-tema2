@@ -16,8 +16,7 @@ public class Teacher implements Serializable {
 
     @Column
     private String department;
-
-    // Constructor implicit
+    
     public Teacher() {}
 
     public Teacher(String name, String department) {
@@ -25,7 +24,6 @@ public class Teacher implements Serializable {
         this.department = department;
     }
 
-    // Getters și Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

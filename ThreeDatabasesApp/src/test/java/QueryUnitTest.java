@@ -24,7 +24,7 @@ public class QueryUnitTest {
         for (Course course : courses) {
             System.out.println(course);
         }
-        //Assertions.assertFalse(courses.isEmpty(), "Tabela COURSES trebuie să conțină date");
+        Assertions.assertFalse(courses.isEmpty(), "Tabela COURSES trebuie să conțină date");
 
         em.close();
         emf.close();

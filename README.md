@@ -26,7 +26,12 @@ COMMIT; <--------am stat 5 ore sa imi dau seama ca de asta nu vedeam niciun teac
 
 4. Populare MSSQL 
 
+Win:
 docker run -it --network=docker-databases_default -v %cd%/mssql/init.sql:/init.sql:ro mcr.microsoft.com/mssql-tools /opt/mssql-tools/bin/sqlcmd -S docker-databases-mssql-1 -U sa -P "Password123!" -i /init.sql
+
+MacOS:
+docker run -it --platform linux/amd64 --network=docker-databases_default -v /Users/mmu8136/Desktop/Master/JavaTechnologies/master-java-technologies-tema2/docker-databases/mssql/init.sql:/init.sql:ro mcr.microsoft.com/mssql-tools /opt/mssql-tools/bin/sqlcmd -S docker-databases-mssql-1 -U sa -P "Password123\!" -i /init.sql
+
 
 5. docker run -it --network=docker-databases_default mcr.microsoft.com/mssql-tools /opt/mssql-tools/bin/sqlcmd -S docker-databases-mssql-1 -U univuser -P "Password123!"
 
@@ -37,8 +42,11 @@ docker run -it --network=docker-databases_default -v %cd%/mssql/init.sql:/init.s
      GO
 8. Conectare postgresql
 
+Win:
 psql -h localhost -p 5432 -U postgres -d univdb_postgres
 
+MacOS:
+docker run -it --network=docker-databases_default -e PGPASSWORD=password postgres psql -h docker-databases-postgres-1 -U postgres -d univdb_postgres
 
 Parola : password
 
@@ -55,8 +63,14 @@ INSERT INTO Students (name, email) VALUES
 
 
 
-
 9. mvn clean install (daca il faci mai devreme pica integration testele)
 
-10. pui war in wildfly/standalone
-11. rulezi standalone.bat
+10. Stergi tot ce are legatura cu ExampleDS din standalone.xml / standalone-full.xml / standalone-full-ha.xml / standalone-ha.xml
+
+11. (Optional doar pentru MacOS) acces la standalone.sh cu 
+
+chmod +x standalone.sh
+
+12. pui war in wildfly/standalone/deployments
+
+13. rulezi standalone.bat / standalone.sh
